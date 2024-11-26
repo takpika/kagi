@@ -2,7 +2,7 @@
 CXX := g++
 
 # Compiler flags
-CXXFLAGS := -g -std=c++11 -Wall -Wextra -Isrc
+CXXFLAGS := -g -std=c++17 -Wall -Wextra -Isrc
 
 # Source directory
 SRC_DIR := src
@@ -21,6 +21,18 @@ OBJS := $(patsubst $(SRC_DIR)/%.cpp,$(OBJ_DIR)/%.o,$(SRCS))
 
 # Target executable
 TARGET := $(BUILD_DIR)/kagi
+
+UNAME_S := $(shell uname -s)
+CPU_ARCH := $(shell uname -m)
+
+ifeq ($(UNAME_S),Darwin)
+	CXXFLAGS += -framework CoreFoundation -framework Security
+	ifeq ($(CPU_ARCH),arm64)
+		CXXFLAGS += -I/opt/homebrew/include -L/opt/homebrew/lib
+	else ifeq ($(CPU_ARCH),x86_64)
+		CXXFLAGS += -I/usr/local/include -L/usr/local/lib
+	endif
+endif
 
 # Default target
 all: $(TARGET)
