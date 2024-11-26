@@ -1,0 +1,9 @@
+.DS_Store
+._*
+
+[Dd]esktop.ini
+
+*.o
+build/
+
+.vscode
