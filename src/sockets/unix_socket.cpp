@@ -3,8 +3,10 @@
 #include <vector>
 #include <iostream>
 #include <thread>
+#include <grp.h>
+#include <sys/stat.h>
 
-#define UNIX_SOCKET_PATH "/tmp/kagi.sock"
+#define UNIX_SOCKET_PATH "/var/run/kagi.sock"
 
 UnixSocket::UnixSocket() {
     socketFd = socket(AF_UNIX, SOCK_STREAM, 0);
@@ -20,7 +22,22 @@ UnixSocket::UnixSocket() {
     if (bind(socketFd, (struct sockaddr *)&address, sizeof(address)) == -1) {
         throw std::runtime_error("Error binding socket");
     }
-
+    #ifdef __linux__
+    struct group *grp = getgrnam("kagi");
+    #elif __APPLE__
+    struct group *grp = getgrnam("daemon");
+    #else
+    struct group *grp = nullptr;
+    #endif
+    if (grp == nullptr) {
+        throw std::runtime_error("Error getting group information");
+    }
+    if (chown(UNIX_SOCKET_PATH, -1, grp->gr_gid) == -1) {
+        throw std::runtime_error("Error changing socket ownership");
+    }
+    if (chmod(UNIX_SOCKET_PATH, 0660) == -1) {
+        throw std::runtime_error("Error changing socket permissions");
+    }
     if (listen(socketFd, 5) == -1) {
         throw std::runtime_error("Error listening on socket");
     }
