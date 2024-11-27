@@ -1,5 +1,9 @@
 name: Linux on push
-on: push
+on:
+    push:
+        paths:
+            -   'src/**'
+            -   'Makefile'
 
 jobs:
     build:
