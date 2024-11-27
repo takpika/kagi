@@ -96,9 +96,6 @@ bool encryptWithRSAKey(std::vector<uint8_t> &data, std::vector<uint8_t> &encrypt
     CFRelease(dataRef);
 
     if (error) {
-        CFStringRef errorMsg = CFErrorCopyDescription(error);
-        std::cerr << "Encryption error: " << CFStringGetCStringPtr(errorMsg, kCFStringEncodingUTF8) << std::endl;
-        CFRelease(errorMsg);
         CFRelease(error);
         return false;
     }
@@ -142,9 +139,6 @@ bool decryptWithRSAKey(std::vector<uint8_t> &encryptedData, std::vector<uint8_t>
     CFRelease(encryptedDataRef);
 
     if (error) {
-        CFStringRef errorMsg = CFErrorCopyDescription(error);
-        std::cerr << "Decryption error: " << CFStringGetCStringPtr(errorMsg, kCFStringEncodingUTF8) << std::endl;
-        CFRelease(errorMsg);
         CFRelease(error);
         return false;
     }

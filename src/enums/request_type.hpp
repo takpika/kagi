@@ -4,9 +4,10 @@
 #include <string>
 
 enum class RequestType {
-    encrypt,
-    decrypt,
-    publickey
+    aes256encrypt,
+    aes256decrypt,
+    publickey,
+    unknown
 };
 
 class RequestTypeHelper {

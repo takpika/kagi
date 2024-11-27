@@ -35,7 +35,7 @@ UNAME_S := $(shell uname -s)
 CPU_ARCH := $(shell uname -m)
 
 ifeq ($(UNAME_S),Darwin)
-	CXXFLAGS += -framework CoreFoundation -framework Security
+	LDFLAGS += -framework CoreFoundation -framework Security
 	ifeq ($(CPU_ARCH),arm64)
 		CXXFLAGS += -I/opt/homebrew/include
 		LDFLAGS += -L/opt/homebrew/lib
