@@ -3,6 +3,15 @@ CXX := g++
 
 # Compiler flags
 CXXFLAGS := -g -std=c++17 -Wall -Wextra -Isrc
+LDFLAGS :=
+
+# OpenSSL
+CXXFLAGS += $(shell pkg-config --cflags openssl)
+LDFLAGS += $(shell pkg-config --libs openssl)
+
+# Zlib
+CXXFLAGS += $(shell pkg-config --cflags zlib)
+LDFLAGS += $(shell pkg-config --libs zlib)
 
 # Source directory
 SRC_DIR := src
@@ -28,9 +37,11 @@ CPU_ARCH := $(shell uname -m)
 ifeq ($(UNAME_S),Darwin)
 	CXXFLAGS += -framework CoreFoundation -framework Security
 	ifeq ($(CPU_ARCH),arm64)
-		CXXFLAGS += -I/opt/homebrew/include -L/opt/homebrew/lib
+		CXXFLAGS += -I/opt/homebrew/include
+		LDFLAGS += -L/opt/homebrew/lib
 	else ifeq ($(CPU_ARCH),x86_64)
-		CXXFLAGS += -I/usr/local/include -L/usr/local/lib
+		CXXFLAGS += -I/usr/local/include
+		LDFLAGS += -L/usr/local/lib
 	endif
 endif
 
@@ -40,7 +51,7 @@ all: $(TARGET)
 # Rule to build the target executable
 $(TARGET): $(OBJS)
 	@mkdir -p $(BUILD_DIR)
-	$(CXX) $(CXXFLAGS) $^ -o $@
+	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
 
 # Rule to compile C++ source files
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
