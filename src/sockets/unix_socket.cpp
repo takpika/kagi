@@ -8,7 +8,11 @@
 
 #define UNIX_SOCKET_PATH "/var/run/kagi.sock"
 
-UnixSocket::UnixSocket() {
+UnixSocket::~UnixSocket() {
+    close(socketFd);
+}
+
+bool UnixSocket::setupSocket() {
     socketFd = socket(AF_UNIX, SOCK_STREAM, 0);
     if (socketFd == -1) {
         throw std::runtime_error("Error creating socket");
@@ -20,7 +24,8 @@ UnixSocket::UnixSocket() {
     unlink(UNIX_SOCKET_PATH);
 
     if (bind(socketFd, (struct sockaddr *)&address, sizeof(address)) == -1) {
-        throw std::runtime_error("Error binding socket");
+        std::cerr << "Error binding socket" << std::endl;
+        return false;
     }
     #ifdef __linux__
     struct group *grp = getgrnam("kagi");
@@ -30,21 +35,22 @@ UnixSocket::UnixSocket() {
     struct group *grp = nullptr;
     #endif
     if (grp == nullptr) {
-        throw std::runtime_error("Error getting group information");
+        std::cerr << "Error getting group information" << std::endl;
+        return false;
     }
     if (chown(UNIX_SOCKET_PATH, -1, grp->gr_gid) == -1) {
-        throw std::runtime_error("Error changing socket ownership");
+        std::cerr << "Error changing socket owner" << std::endl;
+        return false;
     }
     if (chmod(UNIX_SOCKET_PATH, 0660) == -1) {
-        throw std::runtime_error("Error changing socket permissions");
+        std::cerr << "Error changing socket permissions" << std::endl;
+        return false;
     }
     if (listen(socketFd, 5) == -1) {
-        throw std::runtime_error("Error listening on socket");
+        std::cerr << "Error listening on socket" << std::endl;
+        return false;
     }
-}
-
-UnixSocket::~UnixSocket() {
-    close(socketFd);
+    return true;
 }
 
 void UnixSocket::onClient(int clientSocket, REQUEST_HANDLER handler) {

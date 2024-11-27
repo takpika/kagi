@@ -18,8 +18,8 @@ class UnixSocket {
     void onClient(int clientSocket, REQUEST_HANDLER handler);
 
     public:
-    UnixSocket();
     ~UnixSocket();
+    bool setupSocket();
     void serveForever(REQUEST_HANDLER handler);
 };
 

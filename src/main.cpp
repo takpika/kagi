@@ -55,6 +55,9 @@ nlohmann::json handleRequest(nlohmann::json request) {
 
 int main() {
     UnixSocket socket;
+    if (!socket.setupSocket()) {
+        return 1;
+    }
     socket.serveForever(handleRequest);
     return 0;
 }
