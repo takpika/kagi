@@ -43,6 +43,9 @@ ifeq ($(UNAME_S),Darwin)
 		CXXFLAGS += -I/usr/local/include
 		LDFLAGS += -L/usr/local/lib
 	endif
+else ifeq ($(UNAME_S),Linux)
+	CXXFLAGS += -I/usr/include
+	LDFLAGS += -L/usr/lib $(shell pkg-config --libs tss2-esys) $(shell pkg-config --libs tss2-rc)
 endif
 
 # Default target

@@ -1,6 +1,10 @@
 #ifndef SOCKETS_UNIX_SOCKET_H
 #define SOCKETS_UNIX_SOCKET_H
 
+#ifdef _WIN32
+#error "UnixSocket is not supported on Windows"
+#endif
+
 #include <sys/socket.h>
 #include <sys/un.h>
 #include <nlohmann/json.hpp>

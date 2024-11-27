@@ -1,3 +1,4 @@
+#ifdef __APPLE__
 #include <crypt/macos.hpp>
 #include <iostream>
 #include <Security/Security.h>
@@ -90,7 +91,7 @@ bool encryptWithRSAKey(std::vector<uint8_t> &data, std::vector<uint8_t> &encrypt
 
     CFDataRef dataRef = CFDataCreate(kCFAllocatorDefault, data.data(), data.size());
     CFErrorRef error = NULL;
-    CFDataRef encryptedDataRef = SecKeyCreateEncryptedData(publicKey, kSecKeyAlgorithmRSAEncryptionOAEPSHA512, dataRef, &error);
+    CFDataRef encryptedDataRef = SecKeyCreateEncryptedData(publicKey, kSecKeyAlgorithmRSAEncryptionOAEPSHA256, dataRef, &error);
 
     CFRelease(key);
     CFRelease(dataRef);
@@ -133,7 +134,7 @@ bool decryptWithRSAKey(std::vector<uint8_t> &encryptedData, std::vector<uint8_t>
 
     CFDataRef encryptedDataRef = CFDataCreate(kCFAllocatorDefault, encryptedData.data(), encryptedData.size());
     CFErrorRef error = NULL;
-    CFDataRef decryptedDataRef = SecKeyCreateDecryptedData(key, kSecKeyAlgorithmRSAEncryptionOAEPSHA512, encryptedDataRef, &error);
+    CFDataRef decryptedDataRef = SecKeyCreateDecryptedData(key, kSecKeyAlgorithmRSAEncryptionOAEPSHA256, encryptedDataRef, &error);
 
     CFRelease(key);
     CFRelease(encryptedDataRef);
@@ -190,3 +191,4 @@ AESData generateAESKey() {
     }
     return key;
 }
+#endif

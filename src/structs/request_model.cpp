@@ -1,6 +1,5 @@
 #include <structs/request_model.hpp>
 #include <crypt/base64.hpp>
-#include <crypt/gzip.hpp>
 
 nlohmann::json RequestModel::toJson() {
     nlohmann::json json;
